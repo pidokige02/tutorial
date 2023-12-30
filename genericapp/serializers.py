@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from genericapp.models import SearchDomain
+from .models import SearchDomain
 
 
 class SearchDomainSerializer(serializers.ModelSerializer):
