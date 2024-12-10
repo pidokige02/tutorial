@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     # DRF
     'rest_framework',
 	'quickstart.apps.QuickstartConfig',
@@ -56,7 +57,7 @@ MIDDLEWARE = [
 # DRF - restframwork config
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 3
 }
 
 ROOT_URLCONF = 'tutorial.urls'
@@ -131,3 +132,31 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',  # 로그 파일 경로
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'genericapp': {  # genericapp 모듈의 로깅 설정
+            'handlers': ['console', 'file'],
+            'level': 'INFO',  # 최소 로그 수준
+            'propagate': False,
+        },
+    },
+}
