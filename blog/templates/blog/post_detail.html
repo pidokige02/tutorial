@@ -1,0 +1,16 @@
+<html>
+  <head><title>Hello World</title></head>
+  <body>
+    <a href="{% url 'posts' %}">
+      Post List
+    </a>
+    <h1>
+      {{ post.title }}
+    </h1>
+    <p>created: {{ post.created_at }}</p>
+    <p>updated: {{ post.updated_at }}</p>
+    <p>published: {{ post.published_at }}</p>
+    <p>author: {{ post.author.username }}</p>
+    <p>{{ post.content | linebreaksbr }}</p>
+  </body>
+</html>
