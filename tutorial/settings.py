@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     # DRF
     'rest_framework',
 	'quickstart.apps.QuickstartConfig',
-    'genericapp'
+    'genericapp',
+    'blog'
 ]
 
 MIDDLEWARE = [
