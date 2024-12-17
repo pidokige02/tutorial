@@ -5,4 +5,5 @@ urlpatterns = [
     path('', views.posts, name='posts'),
     path('post/<int:id>/', views.post_detail, name='post_detail'), # <<<<<<<<<<<< here
     path('post/create/', views.post_create, name='post_create'), # <<<<<<<<<<< here
+    path('posts_json/', views.posts_json, name='posts_json'),
 ]

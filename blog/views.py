@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
+from django.core import serializers
+from django.http import HttpResponse
 from django.utils import timezone
 from .forms import PostCreateForm
 
@@ -24,3 +26,8 @@ def post_create(request):
     else:
         form = PostCreateForm()
     return render(request, 'blog/post_create.html', {'form': form})
+
+def posts_json(request):
+    posts = Post.objects.filter(published_at__isnull=False).order_by('-published_at')
+    post_list = serializers.serialize('json', posts)
+    return HttpResponse(post_list, content_type="text/json-comment-filtered")
