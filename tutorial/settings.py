@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,10 +56,21 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),  # 액세스 토큰 유효 시간
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),  # 리프레시 토큰 유효 시간
+    'ROTATE_REFRESH_TOKENS': True,  # 리프레시 토큰 재사용 방지
+    'BLACKLIST_AFTER_ROTATION': True,  # 사용된 리프레시 토큰 블랙리스트 처리
+}
+
 # DRF - restframwork config
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 3
+    'PAGE_SIZE': 10
 }
 
 ROOT_URLCONF = 'tutorial.urls'
