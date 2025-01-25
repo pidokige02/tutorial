@@ -28,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# CORS 설정
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",  # Vue.js 애플리케이션의 주소
+]
+
 
 # Application definition
 
@@ -41,6 +46,10 @@ INSTALLED_APPS = [
     'django_filters',
     # DRF
     'rest_framework',
+    'rest_framework.authtoken',  # (옵션) Token 기반 인증용
+    'corsheaders',
+    'djoser',
+
 	'quickstart.apps.QuickstartConfig',
     'genericapp',
     'blog'
@@ -49,6 +58,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # 반드시 CommonMiddleware 위에 추가
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -57,7 +67,7 @@ MIDDLEWARE = [
 ]
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),  # 액세스 토큰 유효 시간
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=5),  # 액세스 토큰 유효 시간
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),  # 리프레시 토큰 유효 시간
     'ROTATE_REFRESH_TOKENS': True,  # 리프레시 토큰 재사용 방지
     'BLACKLIST_AFTER_ROTATION': True,  # 사용된 리프레시 토큰 블랙리스트 처리
@@ -65,7 +75,12 @@ SIMPLE_JWT = {
 
 # DRF - restframwork config
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 

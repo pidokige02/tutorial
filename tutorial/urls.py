@@ -24,11 +24,14 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # # 다른 URL 패턴들 ...
+    # # end point for JWT
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('', include('blog.urls')), 
+    # djoser 엔드포인트
+    path('auth/', include('djoser.urls')),  # 기본 엔드포인트
+
+    path('blog/', include('blog.urls')),
 
     path('api/', include('quickstart.urls')),
     path('api2/', include('genericapp.urls')),
