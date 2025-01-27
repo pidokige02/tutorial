@@ -10,16 +10,50 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Post
-from .forms import PostCreateForm
+from .forms import SignUpForm, PostCreateForm, PostUpdateForm
 from .serializers import PostSerializer, PostUpdateSerializer
+
+# for local application only
+def default_layout(request):
+    # 전달할 컨텍스트 데이터 (필요한 경우)
+    context = {
+        "title": "Default Layout",
+        "message": "Welcome to the Default Layout Page",
+    }
+    return render(request, "blog/home.html", context)
+
+# for local application only
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # 자동으로 로그인 처리
+            return redirect('home')  # 홈 페이지로 리다이렉트
+    else:
+        form = SignUpForm()
+    return render(request, 'blog/signup.html', {'form': form})
+
+# for local application only
+def about(request):
+    return render(request, 'blog/about.html')  # about.html 템플릿을 렌더링
 
 
 def posts(request):
+     # 게시물 필터링 및 정렬
     posts = Post.objects.filter(published_at__isnull=False).order_by('-published_at')
-    return render(request, 'blog/posts.html', {'posts': posts})
+    # 페이지네이션 처리
+    paginator = Paginator(posts, 3)  # 한 페이지에 3개의 게시물 표시
+    page_number = request.GET.get('page')  # 쿼리 매개변수로 페이지 번호 가져오기
+    page_obj = paginator.get_page(page_number)
+    # 렌더링
+    return render(request, 'blog/posts.html', {'page_obj': page_obj})
 
 
 def post_detail(request, id):
@@ -39,6 +73,26 @@ def post_create(request):
     else:
         form = PostCreateForm()
     return render(request, 'blog/post_create.html', {'form': form})
+
+
+def post_update(request, id):
+    post = get_object_or_404(Post, id=id)
+
+    if request.method == "POST":
+        form = PostUpdateForm(request.POST, instance=post)  # 기존 데이터를 폼에 바인딩
+        if form.is_valid():
+            form.save()  # 폼 데이터 저장
+            return redirect('post_detail', id=post.id)  # 저장 후 상세 페이지로 이동
+    else:
+        form = PostUpdateForm(instance=post)  # GET 요청 시 기존 데이터로 폼 초기화
+
+    return render(request, 'blog/post_update.html', {'form': form, 'post': post})
+
+
+def post_delete(request, id):
+    post = get_object_or_404(Post, id=id)
+    post.delete()
+    return redirect('posts')
 
 
 @api_view(['GET'])

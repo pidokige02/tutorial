@@ -3,8 +3,10 @@ from . import views
 
 urlpatterns = [
     path('', views.posts, name='posts'),
-    path('post/<int:id>/', views.post_detail, name='post_detail'),
-    path('post/create/', views.post_create, name='post_create'),
+    path('<int:id>/', views.post_detail, name='post_detail'),
+    path('create/', views.post_create, name='post_create'),
+    path('update/<int:id>/', views.post_update, name='post_update'),
+    path('delete/<int:id>/', views.post_delete, name='post_delete'),
     path('posts_json/', views.posts_json, name='posts_json'),
 
     # for REST API

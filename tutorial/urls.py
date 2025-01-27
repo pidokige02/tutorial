@@ -20,9 +20,18 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.contrib.auth import views as auth_views
+from blog.views import default_layout, signup, about
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('', default_layout, name='home'),  # 기본 URL
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('signup/', signup, name='signup'),
+    path('about/', about, name='about'),  # About 페이지 경로 추가
 
     # # end point for JWT
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -30,6 +39,7 @@ urlpatterns = [
 
     # djoser 엔드포인트
     path('auth/', include('djoser.urls')),  # 기본 엔드포인트
+    path('accounts/', include('allauth.urls')),  # allauth URL 추가
 
     path('blog/', include('blog.urls')),
 

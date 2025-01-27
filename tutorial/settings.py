@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,19 +38,31 @@ CORS_ALLOWED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    # 기본 Django 앱
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # 추가 앱
     'django_filters',
+    'corsheaders',
+
     # DRF
     'rest_framework',
     'rest_framework.authtoken',  # (옵션) Token 기반 인증용
-    'corsheaders',
-    'djoser',
+    'djoser',   # DRF와 통합된 사용자 인증 및 관리
 
+    # django-allauth 관련
+    'django.contrib.sites',  # 사이트 관리를 위해 필수
+    'allauth',  # allauth 기본 기능
+    'allauth.account',  # 계정 관리 기능
+    'allauth.socialaccount',  # 소셜 로그인 기능
+    'allauth.socialaccount.providers.google',  # Google OAuth2 지원
+
+    # 커스텀 앱
 	'quickstart.apps.QuickstartConfig',
     'genericapp',
     'blog'
@@ -64,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # 이 줄을 추가
 ]
 
 SIMPLE_JWT = {
@@ -88,12 +102,18 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+
 ROOT_URLCONF = 'tutorial.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,6 +158,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# 로그인 관련 URL
+LOGIN_REDIRECT_URL = '/'  # 로그인 후 리다이렉트될 URL
+LOGOUT_REDIRECT_URL = '/'  # 로그아웃 후 리다이렉트될 URL
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -150,6 +173,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
