@@ -38,9 +38,10 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # djoser 엔드포인트
+    # djoser 엔드포인트 계정생성이나 회원관리용으로 사용함
     path('auth/', include('djoser.urls')),  # 기본 엔드포인트
-    # end point for auth from SNS 
+
+    # end point for SNS auth, 등 다영한 auth 기능을 지원함
     path('accounts/', include('allauth.urls')),  # allauth URL 추가
 
     path('blog/', include('blog.urls')),
