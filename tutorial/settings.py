@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-dr81sgamgfoykf&1ftlh3pl#+*#^0&vy9fn%v%#31(ei!%1ke=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # CORS 설정
 CORS_ALLOWED_ORIGINS = [
@@ -107,6 +107,17 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+    }
+}
 
 ROOT_URLCONF = 'tutorial.urls'
 
@@ -162,7 +173,6 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_REDIRECT_URL = '/'  # 로그인 후 리다이렉트될 URL
 LOGOUT_REDIRECT_URL = '/'  # 로그아웃 후 리다이렉트될 URL
 
-# Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
@@ -173,12 +183,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-SITE_ID = 1
+SITE_ID = 3
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
