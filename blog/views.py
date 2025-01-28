@@ -11,7 +11,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
@@ -34,8 +34,12 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # 자동으로 로그인 처리
-            return redirect('home')  # 홈 페이지로 리다이렉트
+            # 사용자 인증
+            user = authenticate(username=user.username, password=form.cleaned_data['password1'])
+
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # 홈 페이지로 리다이렉트
     else:
         form = SignUpForm()
     return render(request, 'blog/signup.html', {'form': form})
@@ -44,10 +48,10 @@ def signup(request):
 def about(request):
     return render(request, 'blog/about.html')  # about.html 템플릿을 렌더링
 
-
+@login_required
 def posts(request):
-     # 게시물 필터링 및 정렬
-    posts = Post.objects.filter(published_at__isnull=False).order_by('-published_at')
+    # 로그인한 사용자에 의해 작성된 게시물 필터링 및 정렬
+    posts = Post.objects.filter(author=request.user, published_at__isnull=False).order_by('-published_at')
     # 페이지네이션 처리
     paginator = Paginator(posts, 3)  # 한 페이지에 3개의 게시물 표시
     page_number = request.GET.get('page')  # 쿼리 매개변수로 페이지 번호 가져오기
